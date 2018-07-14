@@ -41,6 +41,23 @@
 
     gulp.task('default', tool.buildAndWatch);
     ```
+3. 添加 项目文件 project-xxx.js:
+    ```js
+    'use strict';
+
+    module.exports = {
+        venderCss: [
+            // 第三方库 css 文件
+        ],
+        venderJs: [
+            // 第三方库 js 文件
+        ],
+        venderAssets: [
+            // 可能需要的第三方库额外文件
+        ]
+    };
+
+    ```
 ## 使用方式：
 
 - 打包：
