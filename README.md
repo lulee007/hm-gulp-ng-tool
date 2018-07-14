@@ -37,7 +37,7 @@ npm i hm-gismap-gulp
     ;
 
 
-    var tool = require('gulp-hm-web-gis-tool'),
+    var tool = require('hm-gismap-gulp'),
         config = require('./gulp/config');
     // 一定要添加配置文件
     tool.configWrap.config = config;
