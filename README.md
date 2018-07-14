@@ -1,6 +1,11 @@
 # gulp-hm-web-gis-tool
 汉图研发部gis前端开发打包工具
 
+## 安装：
+```sh
+npm i hm-gismap-gulp
+```
+
 ## 配置：
 
 1. 在项目根目录添加 gulp 文件夹，然后添加配置文件 config.js：
