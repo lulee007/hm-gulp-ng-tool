@@ -41,7 +41,7 @@
 
     gulp.task('default', tool.buildAndWatch);
     ```
-3. 添加 项目文件 project-xxx.js:
+3. 在 gulp 目录中添加项目文件 project-xxx.js:
     ```js
     'use strict';
 
