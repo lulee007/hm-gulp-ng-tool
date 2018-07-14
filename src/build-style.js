@@ -21,8 +21,8 @@ function buildStylesByFolders() {
         });
     log(folders);
 
-    return gulp.src(folders, {base: './src/main/webapp'})
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+    return gulp.src(folders, { base: './src/main/webapp' })
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(sass())
         // 去掉css注释
         .pipe(stripCssComments())

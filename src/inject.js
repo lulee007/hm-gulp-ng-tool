@@ -59,7 +59,7 @@ function index() {
                     var allJs = [].concat(coreConf.coreJs);
                     var allCss = [].concat(coreConf.coreCss);
                     // if (page !== 'index') {
-                    var pageConf = require(configWrap.config.gulpDir+'project-' + page);
+                    var pageConf = require(configWrap.config.gulpDir + 'project-' + page);
                     allJs = allJs.concat(pageConf.venderJs);
                     allCss = allCss.concat(pageConf.venderCss);
                     // }
@@ -78,7 +78,7 @@ function index() {
                     var dFile = file.path.split(path.sep).join('/')
                         .replace(configWrap.config.webappDir + 'template/', configWrap.config.tmp)
                         .replace('index.html', page + '.html');
-                    log('packedPages',packageTime, dFile);
+                    log('packedPages', packageTime, dFile);
                     if (fs.existsSync(dFile)) {
                         log('删除旧文件', dFile);
                         fs.unlinkSync(dFile);
@@ -96,8 +96,8 @@ function index() {
                     }
                 });
         });
-    
-        // TODO 应当避免使用 兼容旧的模式，生成所有依赖到index 
+
+    // TODO 应当避免使用 兼容旧的模式，生成所有依赖到index 
     gulp.src(configWrap.config.webappDir + '/template/index.html')
         .pipe(plumber({ errorHandler: handleErrors }))
         .pipe(mapStream(function (file, cb) {

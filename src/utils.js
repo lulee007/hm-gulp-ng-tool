@@ -50,7 +50,7 @@ function parseProjectName() {
 function env() {
     var params = _parseParams(process.argv);
     var port = params.port;
-    if(!port){
+    if (!port) {
         log('参数：port 为空（build 模式请忽略）如：--port=8080');
     }
     var pages = getModuleNames();
@@ -65,7 +65,7 @@ function env() {
     var version = parseVersion();
     var projectName = parseProjectName();
     return {
-        params:params,
+        params: params,
         modules: modules,
         prod: prod,
         port: port,
@@ -116,11 +116,11 @@ function moduleFiles() {
 function getModuleNames() {
     if (!_module_names) {
         var params = _parseParams(process.argv);
-        if(!params || !params.pages){
+        if (!params || !params.pages) {
             log('pages *********************************');
             log('pages 参数错误:--pages=page1,page2,page3');
             log('pages *********************************');
-            return ;
+            return;
         }
         _module_names = params.pages.split(',');
         _module_names = _module_names.concat(coreConf.commonModules);
@@ -134,7 +134,7 @@ function _parseParams(argv) {
         .filter(function (arg) {
             return arg.startsWith('--');
         }).map(function (arg) {
-            var argKeyValue = arg.replace('--','').split('=');
+            var argKeyValue = arg.replace('--', '').split('=');
             return argKeyValue;
         })
         .reduce(function (params, argKeyValue) {

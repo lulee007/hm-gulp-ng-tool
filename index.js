@@ -199,6 +199,11 @@ gulp.task('save-old-manifest', manifestHelper.saveOldManifest);
  * 5   清除 临时 样式文件
  */
 function _build(cb) {
+    if (!configWrap.config || Object.keys(configWrap.config).length < 1) {
+        log('缺少配置文件');
+        cb();
+        return;
+    }
     runSequence(
         'mvn-clean',
         'clean-dist',
@@ -288,16 +293,20 @@ gulp.task('start-browser-sync', function (cb) {
     }
 });
 
-var demoConfig = require('./src/config-wrap');
 gulp.task('temp', function (cb) {
 
-    console.log('temp taks logged', demoConfig);
+    console.log('temp taks logged', configWrap);
     cb();
 });
 
 function _buildWatch(cb) {
+    if (!configWrap.config || Object.keys(configWrap.config).length < 1) {
+        log('缺少配置文件');
+        cb();
+        return;
+    }
     var env = util.getEnv();
-    if(!env.params.port || !env.params.pages){
+    if (!env.params.port || !env.params.pages) {
         log('缺少参数');
         cb();
         return;

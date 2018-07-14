@@ -44,11 +44,11 @@ function revModules() {
     ];
 
     return gulp.src(revFiles)
-        .pipe(plumber({errorHandler: handleErrors}))
+        .pipe(plumber({ errorHandler: handleErrors }))
         .pipe(sourcemaps.init())
         .pipe(gulpIf('*.js', jsTask()))
         .pipe(gulpIf('*.css', cssTask()))
-        .pipe(gulpIf('*.html', htmlmin({collapseWhitespace: true})))
+        .pipe(gulpIf('*.html', htmlmin({ collapseWhitespace: true })))
         .pipe(gulpIf('**/*.!(txt)', rev()))
         .pipe(gulpIf('**/*.!(txt|html)', sourcemaps.write('.')))
         .pipe(gulp.dest(configWrap.config.tmp + 'rev/'))
@@ -68,9 +68,9 @@ function revState() {
     var manifest = gulp.src(configWrap.config.revManifest);
 
     return gulp.src(revFiles)
-        .pipe(plumber({errorHandler: handleErrors}))
+        .pipe(plumber({ errorHandler: handleErrors }))
         .pipe(sourcemaps.init())
-        .pipe(revReplace({manifest: manifest}))
+        .pipe(revReplace({ manifest: manifest }))
         .pipe(jsTask())
         .pipe(rev())
         .pipe(sourcemaps.write('.'))
@@ -94,9 +94,9 @@ function revComponent() {
     var manifest = gulp.src(configWrap.config.revManifest);
 
     return gulp.src(revFiles)
-        .pipe(plumber({errorHandler: handleErrors}))
+        .pipe(plumber({ errorHandler: handleErrors }))
         .pipe(sourcemaps.init())
-        .pipe(revReplace({manifest: manifest}))
+        .pipe(revReplace({ manifest: manifest }))
         .pipe(jsTask())
         .pipe(rev())
         .pipe(sourcemaps.write('.'))
@@ -113,7 +113,7 @@ function revComponent() {
 function revReplaceIndex() {
     var manifest = gulp.src(configWrap.config.revManifest);
     return gulp.src(configWrap.config.tmp + '*.html')
-        .pipe(revReplace({manifest: manifest}))
+        .pipe(revReplace({ manifest: manifest }))
         .pipe(mapStream(function (file, cb) {
             var dFile = file.path.split(path.sep).join('/').replace(configWrap.config.tmp, configWrap.config.dist);
             log('revReplaceIndex', dFile);
@@ -129,8 +129,8 @@ function revReplaceIndex() {
 function revReplaceHtml() {
     //TODO ng-include-html 容易导致 rev 不变问题
     var manifest = gulp.src(configWrap.config.revManifest);
-    return gulp.src(configWrap.config.tmp + 'rev/**/*.html', {base: configWrap.config.tmp + 'rev/'})
-        .pipe(revReplace({manifest: manifest}))
+    return gulp.src(configWrap.config.tmp + 'rev/**/*.html', { base: configWrap.config.tmp + 'rev/' })
+        .pipe(revReplace({ manifest: manifest }))
         .pipe(mapStream(function (file, cb) {
             var dFile = file.path.split(path.sep).join('/').replace(configWrap.config.tmp + 'rev/', configWrap.config.dist + 'app/');
             log('revReplaceHtml', dFile);

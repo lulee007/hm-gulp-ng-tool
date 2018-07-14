@@ -73,7 +73,7 @@ function compareManifest() {
     toDelete = toDelete.map(function (f) {
         return configWrap.config.dist + 'app/' + f;
     });
-    return {toAdd: toAdd, toDelete: toDelete};
+    return { toAdd: toAdd, toDelete: toDelete };
 
 }
 

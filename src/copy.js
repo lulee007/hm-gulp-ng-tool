@@ -54,10 +54,10 @@ function copyAssets() {
         .concat(confCommon.coreJs);
 
     modules.forEach(function (page) {
-        if(coreConf.commonModules.indexOf(page.name)>-1){
-            log('系统模块',page.name);
+        if (coreConf.commonModules.indexOf(page.name) > -1) {
+            log('系统模块', page.name);
         }
-        var confModule = require((coreConf.commonModules.indexOf(page.name)>-1 ? './' : configWrap.config.gulpDir) + 'project-' + page.name);
+        var confModule = require((coreConf.commonModules.indexOf(page.name) > -1 ? './' : configWrap.config.gulpDir) + 'project-' + page.name);
         assetsFiles = assetsFiles.concat(confModule.venderJs)
             .concat(confModule.venderCss)
             .concat(confModule.venderAssets || []);

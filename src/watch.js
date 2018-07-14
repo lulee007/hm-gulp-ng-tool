@@ -20,7 +20,7 @@ var handleErrors = require('./handle-errors');
 var manifestHelper = require('./manifest-helper');
 var path = require('path');
 
-var watchTaskConf = {assets_vender: undefined, dist: undefined};
+var watchTaskConf = { assets_vender: undefined, dist: undefined };
 
 /**
  *
@@ -123,7 +123,7 @@ function GenNewTask(conf) {
                 } else {
                     if (browserSync.needWait) {
                         log('有新的构建任务，取消刷新浏览器');
-                    }else {
+                    } else {
                         browserSync.reload();
                         log('刷新浏览器');
                     }
@@ -144,14 +144,14 @@ function GenNewTask(conf) {
         return a;
     }
 
-    return {addToWatching: addToWatching};
+    return { addToWatching: addToWatching };
 }
 
 /**
  * 只需要 新增，修改和删除三种状态，addDir unlinkDir 不需要
  * @type {{events: [*]}}
  */
-var WatchEvents = {events: ['add', 'change', 'unlink']};
+var WatchEvents = { events: ['add', 'change', 'unlink'] };
 
 /**
  *  监听 第三方插件和 assets 资源
@@ -186,7 +186,7 @@ function watchAssetsVender() {
     // log(filesToWatch);
 
     return watch(filesToWatch, WatchEvents, function (vinyl) {
-        task.addToWatching({event: vinyl.event, path: vinyl.path, base: vinyl.base});
+        task.addToWatching({ event: vinyl.event, path: vinyl.path, base: vinyl.base });
     });
 
 
@@ -207,7 +207,7 @@ function watchDist() {
         task = new GenNewTask(taskConf);
     }
     return watch(configWrap.config.dist + '**/*.*', WatchEvents, function (vinyl) {
-        task.addToWatching({event: vinyl.event, path: vinyl.path, base: vinyl.base});
+        task.addToWatching({ event: vinyl.event, path: vinyl.path, base: vinyl.base });
     });
 
 }
@@ -285,7 +285,7 @@ function watchNormalJsHtml() {
             // 已经处理
             return;
         }
-        return gulp.src(vinyl.path, {base: configWrap.config.webappDir})
+        return gulp.src(vinyl.path, { base: configWrap.config.webappDir })
             .pipe(gulp.dest(configWrap.config.tmp));
 
     });

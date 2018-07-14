@@ -47,7 +47,7 @@ function mergeCssByModule() {
 function mergeModuleCss(m) {
     var dir = m.path;
     log('merge[css] module path:', dir);
-    return gulp.src([dir + '/*.scss'], {base: configWrap.config.webappDir})
+    return gulp.src([dir + '/*.scss'], { base: configWrap.config.webappDir })
         .pipe(sass())
         // 去掉css注释
         .pipe(stripCssComments())
@@ -71,7 +71,7 @@ function mergeComponentsByModule() {
     modules.forEach(function (m) {
         var dir = m.path;
         log('merge[comp] module path:', dir);
-        gulp.src([dir + '/**/*.component.js', '!' + dir + '/*.all.component.js'], {base: configWrap.config.webappDir})
+        gulp.src([dir + '/**/*.component.js', '!' + dir + '/*.all.component.js'], { base: configWrap.config.webappDir })
             .pipe(concat(m.name + '.all.component.js'))
             .pipe(gulp.dest(configWrap.config.tmp + 'app/' + m.name))
             .on('end', function () {
@@ -90,8 +90,8 @@ function mergeComponentsByModule() {
 function mergeModuleComponent(m) {
     var dir = m.path;
     log('merge[comp] module path:', dir);
-    return gulp.src([dir + '/**/*.component.js'], {base: configWrap.config.webappDir})
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+    return gulp.src([dir + '/**/*.component.js'], { base: configWrap.config.webappDir })
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(wait(500))
         .pipe(concat(m.name + '.all.component.js'))
         .pipe(mapStream(function (file, cb) {
@@ -129,8 +129,8 @@ function mergeServicesByModule() {
 function mergeModuleService(m) {
     var dir = m.path;
     log('merge[serv] module path:', dir);
-    return gulp.src([dir + '/**/*.service.js'], {base: configWrap.config.webappDir})
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+    return gulp.src([dir + '/**/*.service.js'], { base: configWrap.config.webappDir })
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(concat(m.name + '.all.service.js'))
         .pipe(mapStream(function (file, cb) {
             _deleteFileInTmp(file.path, m.name);
@@ -144,7 +144,7 @@ function mergeAllStates() {
     return gulp.src(configWrap.config.tmp + 'app/**/*.state.js')
         .pipe(concat('app.all.state.js'))
         .pipe(mapStream(function (file, cb) {
-            log('merge app state',file.path);
+            log('merge app state', file.path);
             if (fs.existsSync(file.path)) {
                 log('mergeAllStates 删除旧文件：', file.path);
                 fs.unlinkSync(file.path);
@@ -162,10 +162,10 @@ function mergeStatesByModule() {
         return m.path + "/**/*.state.js";
     });
     return gulp.src(stateFiles)
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(concat('app.all.state.js'))
         .pipe(mapStream(function (file, cb) {
-            var appState = configWrap.config.tmp+'app/app.all.state.js';
+            var appState = configWrap.config.tmp + 'app/app.all.state.js';
             if (fs.existsSync(appState)) {
                 log('mergeAllStates 删除旧文件：', appState);
                 fs.unlinkSync(appState);
@@ -186,7 +186,7 @@ function _deleteFileInTmp(_path, name) {
     if (fs.existsSync(nPath)) {
         log('merge 替换：', nPath);
         fs.unlinkSync(nPath);
-    }else{
+    } else {
         log('无需替换');
     }
 }
