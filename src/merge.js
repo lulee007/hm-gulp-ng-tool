@@ -14,7 +14,7 @@ var path = require('path');
 
 var util = require('./utils');
 var log = require('fancy-log');
-var configWrap = require('./config');
+var configWrap = require('./config-wrap');
 var plumber = require('gulp-plumber');
 var handleErrors = require('./handle-errors');
 

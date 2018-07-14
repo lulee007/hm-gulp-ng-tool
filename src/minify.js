@@ -19,7 +19,7 @@ var
     handleErrors = require('./handle-errors');
 
 
-var configWrap = require('./config');
+var configWrap = require('./config-wrap');
 var path = require('path');
 
 

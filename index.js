@@ -5,19 +5,20 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync'),
     gulp_watch = require('gulp-watch'),
     plumber = require('gulp-plumber'),
-    clean = require('gulp-clean');
-var log = require('fancy-log');
+    clean = require('gulp-clean'),
+    fs = require('fs'),
+    log = require('fancy-log');
 
-var hmWatch = require('./gulp/watch');
-var handleErrors = require('./gulp/handle-errors'),
-    util = require('./gulp/utils'),
-    copy = require('./gulp/copy'),
-    inject = require('./gulp/inject'),
-    buildStyle = require('./gulp/build-style'),
-    merge = require('./gulp/merge'),
-    minify = require('./gulp/minify'),
-    manifestHelper = require('./gulp/manifest-helper'),
-    config = require('./gulp/config');
+var hmWatch = require('./src/watch');
+var handleErrors = require('./src/handle-errors'),
+    util = require('./src/utils'),
+    copy = require('./src/copy'),
+    inject = require('./src/inject'),
+    buildStyle = require('./src/build-style'),
+    merge = require('./src/merge'),
+    minify = require('./src/minify'),
+    manifestHelper = require('./src/manifest-helper'),
+    configWrap = require('./src/config-wrap');
 
 gulp.task('inject-index', inject.index);
 gulp.task('inject-home', inject.homeModule);
@@ -79,15 +80,26 @@ gulp.task('mvn-install', function (cb) {
     });
 });
 
-gulp.task('clean-dist', function () {
-    return gulp.src(configWrap.config.dist, {read: false})
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
-        .pipe(clean());
+gulp.task('clean-dist', function (cb) {
+    if (!fs.existsSync(configWrap.config.dist)) {
+        log('跳过 clean dist:', configWrap.config.dist);
+        cb && cb();
+    } else {
+        return gulp.src(configWrap.config.dist, { read: false })
+            .pipe(plumber({ errorHandler: handleErrors.reportError }))
+            .pipe(clean());
+    }
 });
-gulp.task('clean-temp', function () {
-    return gulp.src([configWrap.config.tmp], {read: false})
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
-        .pipe(clean());
+
+gulp.task('clean-temp', function (cb) {
+    if (!fs.existsSync(configWrap.config.tmp)) {
+        log('跳过 clean temp:', configWrap.config.tmp);
+        cb && cb();
+    } else {
+        return gulp.src(configWrap.config.tmp, { read: false })
+            .pipe(plumber({ errorHandler: handleErrors.reportError }))
+            .pipe(clean());
+    }
 });
 gulp.task('clean-temp-css', function () {
     var env = util.getEnv();
@@ -99,24 +111,24 @@ gulp.task('clean-temp-css', function () {
     });
     log('css to clean', tmpCss);
     return gulp.src(tmpCss)
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(clean());
 });
 gulp.task('clean-temp-state', function () {
     var tmpStates = [configWrap.config.tmp + '**/*.state.js', '!' + configWrap.config.tmp + 'app/app.all.state.js'];
     log('state to clean', tmpStates);
     return gulp.src(tmpStates)
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(clean());
 });
 gulp.task('clean-temp-rev', function () {
-    return gulp.src([configWrap.config.tmp + 'rev'], {read: false})
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+    return gulp.src([configWrap.config.tmp + 'rev'], { read: false })
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(clean());
 });
 gulp.task('clean-dist-app', function () {
-    return gulp.src([configWrap.config.dist + 'app'], {read: false})
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+    return gulp.src([configWrap.config.dist + 'app'], { read: false })
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(clean());
 });
 
@@ -133,7 +145,7 @@ gulp.task('watch-dev', function () {
     var lastWatchLoop;
     var watchTime = 1500;
     return gulp_watch(configWrap.config.tmp + 'app/**/*', function (f) {
-        log('changedCount:', changedCount,'start_dev_building:', start_dev_building, f.path);
+        log('changedCount:', changedCount, 'start_dev_building:', start_dev_building, f.path);
         if (start_dev_building) {
             return;
         }
@@ -152,7 +164,7 @@ gulp.task('watch-dev', function () {
 
     function runWatchLoop() {
         lastLoopTime = new Date();
-        log(watchTime,'毫秒后执行 build-dev');
+        log(watchTime, '毫秒后执行 build-dev');
         return setTimeout(function () {
             if (changedCount > 0) {
                 runWatchLoopCounter++;
@@ -168,9 +180,9 @@ gulp.task('watch-dev', function () {
 
 gulp.task('build-dev-done', function (cb) {//, ['clean-readonly']
     start_dev_building = false;
-    log('browserSync.needWait',browserSync.needWait);
+    log('browserSync.needWait', browserSync.needWait);
     runWatchLoopCounter--;
-    if(runWatchLoopCounter<=0){
+    if (runWatchLoopCounter <= 0) {
         browserSync.needWait = false;
     }
     cb && cb();
@@ -186,7 +198,7 @@ gulp.task('save-old-manifest', manifestHelper.saveOldManifest);
  * 4   合并 组件，样式
  * 5   清除 临时 样式文件
  */
-gulp.task('build', function (cb) {
+function _build(cb) {
     runSequence(
         'mvn-clean',
         'clean-dist',
@@ -218,7 +230,7 @@ gulp.task('build', function (cb) {
         'clean-readonly',
         'mvn-install',
         cb);
-});
+}
 
 gulp.task('build-dev', function (cb) {
     log('开始重新构建');
@@ -245,20 +257,24 @@ gulp.task('start-browser-sync', function (cb) {
 
     var env = util.getEnv();
     var port = env.port;
-    configWrap.config.proxyUrl = 'http://localhost:' + port + '/sims-gis-map-frontend/';
-    configWrap.config.projectName = 'sims-gis-map-frontend';
+    if (!port) {
+        log('port 参数错误:--port=8080');
+        return;
+    }
+    configWrap.config.proxyUrl = 'http://localhost:' + port + '/' + configWrap.config.projectName + '/';
 
     var get = require('simple-get');
     var maxTryTimes = 200;
     getHttpStatus();
     function getHttpStatus() {
+        log(configWrap.config.proxyUrl);
         get(configWrap.config.proxyUrl, function (err, res) {
             // if (err) throw err;
             if ((err || res.statusCode !== 200) && maxTryTimes-- > 0) {
                 setTimeout(getHttpStatus, 2000);
-                if(res && res.statusCode === 404){
+                if (res && res.statusCode === 404) {
                     log('无法自动重启，请重新启动 tomcat');
-                }else {
+                } else {
                     log('等待 tomcat启动中 。。');
                 }
             } else {
@@ -275,29 +291,24 @@ gulp.task('start-browser-sync', function (cb) {
 var demoConfig = require('./src/config-wrap');
 gulp.task('temp', function (cb) {
 
-    console.log('temp taks logged',demoConfig);
+    console.log('temp taks logged', demoConfig);
     cb();
 });
 
-gulp.task('build-watch', function (cb) {
-    var argv = process.argv;
-    if (!argv || !argv[2]) {
-        console.error('用法：gulp --port \r\n如：gulp --8080');
+function _buildWatch(cb) {
+    var env = util.getEnv();
+    if(!env.params.port || !env.params.pages){
+        log('缺少参数');
+        cb();
         return;
     }
     runSequence('build', ['watch-module', 'watch-assets-vender', 'watch-normalJsHtml', 'watch-dist', 'watch-dev', 'start-browser-sync'], cb);
-});
-
-
-function buildAndWatch(cb){
-    runSequence('build-watch', cb);
 }
 
-function build(cb){
-    runSequence('temp',cb);
-}
+
 
 module.exports = {
-    buildAndWatch:buildAndWatch,
-    build:build
+    buildAndWatch: _buildWatch,
+    build: _build,
+    configWrap: configWrap
 };

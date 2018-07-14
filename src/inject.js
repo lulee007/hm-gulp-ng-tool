@@ -16,7 +16,7 @@ var path = require('path');
 var handleErrors = require('./handle-errors');
 var util = require('./utils');
 
-var configWrap = require('./config');
+var configWrap = require('./config-wrap');
 
 module.exports = {
     states: states,
@@ -50,15 +50,16 @@ function index() {
     var modulesCount = packedPages.length + 1;
     packedPages
         .forEach(function (page) {
+            // 各个模块单独生成 html
             gulp.src(configWrap.config.webappDir + '/template/index.html')
-                .pipe(plumber({errorHandler: handleErrors}))
+                .pipe(plumber({ errorHandler: handleErrors }))
                 .pipe(mapStream(function (file, cb) {
                     var html = file.contents.toString();
                     // 核心组件
                     var allJs = [].concat(coreConf.coreJs);
                     var allCss = [].concat(coreConf.coreCss);
                     // if (page !== 'index') {
-                    var pageConf = require('./project-' + page);
+                    var pageConf = require(configWrap.config.gulpDir+'project-' + page);
                     allJs = allJs.concat(pageConf.venderJs);
                     allCss = allCss.concat(pageConf.venderCss);
                     // }
@@ -77,7 +78,7 @@ function index() {
                     var dFile = file.path.split(path.sep).join('/')
                         .replace(configWrap.config.webappDir + 'template/', configWrap.config.tmp)
                         .replace('index.html', page + '.html');
-                    log(packageTime, dFile);
+                    log('packedPages',packageTime, dFile);
                     if (fs.existsSync(dFile)) {
                         log('删除旧文件', dFile);
                         fs.unlinkSync(dFile);
@@ -85,7 +86,7 @@ function index() {
                     cb(null, file);
                 }))
                 .pipe(injectString.replace('--package-time-inject-here--', packageTime))
-                .pipe(prettify({indent_char: ' ', indent_size: 2}))
+                .pipe(prettify({ indent_char: ' ', indent_size: 2 }))
                 .pipe(rename(page + '.html'))
                 .pipe(gulp.dest(configWrap.config.tmp))
                 .on('end', function () {
@@ -95,16 +96,20 @@ function index() {
                     }
                 });
         });
-
+    
+        // TODO 应当避免使用 兼容旧的模式，生成所有依赖到index 
     gulp.src(configWrap.config.webappDir + '/template/index.html')
-        .pipe(plumber({errorHandler: handleErrors}))
+        .pipe(plumber({ errorHandler: handleErrors }))
         .pipe(mapStream(function (file, cb) {
             var html = file.contents.toString();
             // 核心组件
             var allJs = [].concat(coreConf.coreJs);
             var allCss = [].concat(coreConf.coreCss);
             pages.forEach(function (page) {
-                var pageConf = require('./project-' + page);
+                if (coreConf.commonModules.indexOf(page) > -1) {
+                    log('index index 系统模块', page);
+                }
+                var pageConf = require((coreConf.commonModules.indexOf(page) > -1 ? './' : configWrap.config.gulpDir) + 'project-' + page);
                 allJs = allJs.concat(pageConf.venderJs);
                 // allCss = allCss.concat(pageConf.venderCss);
             });
@@ -145,7 +150,7 @@ function index() {
             cb(null, file);
         }))
         .pipe(injectString.replace('--package-time-inject-here--', packageTime))
-        .pipe(prettify({indent_char: ' ', indent_size: 2}))
+        .pipe(prettify({ indent_char: ' ', indent_size: 2 }))
         .pipe(gulp.dest(configWrap.config.tmp))
         .on('end', function () {
             modulesCount--;
@@ -164,7 +169,7 @@ function homeModule() {
     var modulesString = modules.map(function (m) {
         return m.name;
     }).join('\',\'');
-    return gulp.src(configWrap.config.webappDir + 'app/home/home.controller.js', {base: configWrap.config.webappDir})
+    return gulp.src(configWrap.config.webappDir + 'app/home/home.controller.js', { base: configWrap.config.webappDir })
         .pipe(mapStream(function (file, cb) {
             var state = file.contents.toString();
             state = state.replace('--inject modules here--', modulesString);
@@ -192,14 +197,19 @@ function states() {
 
     var deferred = Q.defer();
     var asyncCount = modules.length;
+    var coreConf = require('./project-common');
 
     modules.forEach(function (m) {
         // var allJs = []；
         var allCss = [];
         var dir = m.tmpPath;// repalce to rev
-        var mConf = require('./project-' + m.name);
+        if (coreConf.commonModules.indexOf(m.name) > -1) {
+            log('states 系统模块', m.name);
+        }
+        var mConf = require((coreConf.commonModules.indexOf(m.name) > -1 ? './' : configWrap.config.gulpDir) + 'project-' + m.name);
+
         allCss = allCss.concat(mConf.venderCss);
-        gulp.src([dir + '/*' + '.state.js'], {base: './'})
+        gulp.src([dir + '/*' + '.state.js'], { base: './' })
             .pipe(mapStream(function (file, cb) {
 
                 var state = file.contents.toString();

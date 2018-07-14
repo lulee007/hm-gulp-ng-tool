@@ -8,7 +8,7 @@ var plumber = require('gulp-plumber');
 var handleErrors = require('./handle-errors');
 var utils = require('./utils');
 var log = require('fancy-log');
-var configWrap = require('./config');
+var configWrap = require('./config-wrap');
 
 /**
  *  根据目录，编译目录下所有scss文件

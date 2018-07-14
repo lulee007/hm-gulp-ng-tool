@@ -10,7 +10,7 @@ var gulp = require('gulp'),
 
 
 var handleErrors = require('./handle-errors');
-var configWrap = require('./config');
+var configWrap = require('./config-wrap');
 var log = require('fancy-log');
 var util = require('./utils');
 var coreConf = require('./project-common');
@@ -31,8 +31,8 @@ function copyByModule() {
 
     var filesToCopy = util.normalFilesInModules();
     // log(filesToCopy);
-    return gulp.src(filesToCopy, {base: configWrap.config.webappDir})
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+    return gulp.src(filesToCopy, { base: configWrap.config.webappDir })
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(gulp.dest(configWrap.config.tmp));
 }
 
@@ -53,12 +53,15 @@ function copyAssets() {
     assetsFiles = confCommon.coreCss
         .concat(confCommon.coreJs);
 
-    modules.forEach(function (m) {
-        var confModule = require('./project-' + m.name);
+    modules.forEach(function (page) {
+        if(coreConf.commonModules.indexOf(page.name)>-1){
+            log('系统模块',page.name);
+        }
+        var confModule = require((coreConf.commonModules.indexOf(page.name)>-1 ? './' : configWrap.config.gulpDir) + 'project-' + page.name);
         assetsFiles = assetsFiles.concat(confModule.venderJs)
             .concat(confModule.venderCss)
             .concat(confModule.venderAssets || []);
-        assetsFiles.push('assets/pages/' + m.name + '/**/*');
+        assetsFiles.push('assets/pages/' + page.name + '/**/*');
 
     });
 
@@ -77,8 +80,8 @@ function copyAssets() {
         .concat(commonIgnore);
 
     log(filesToCopy);
-    return gulp.src(filesToCopy, {base: configWrap.config.webappDir})
-        .pipe(plumber({errorHandler: handleErrors.reportError}))
+    return gulp.src(filesToCopy, { base: configWrap.config.webappDir })
+        .pipe(plumber({ errorHandler: handleErrors.reportError }))
         .pipe(gulp.dest(configWrap.config.dist));
 }
 
@@ -131,9 +134,9 @@ function copyChangedRev() {
 function copyChangedDist() {
     var env = util.getEnv();
 
-    var distFiles = walkSync(configWrap.config.dist, {directories: false, ignore: ['WEB-INF', 'META-INF']});
+    var distFiles = walkSync(configWrap.config.dist, { directories: false, ignore: ['WEB-INF', 'META-INF'] });
     var targetPath = configWrap.config.webTargetDir + env.projectName + '-' + env.projectVersion + '/';
-    var targetFiles = walkSync(targetPath, {directories: false, ignore: ['WEB-INF', 'META-INF']});
+    var targetFiles = walkSync(targetPath, { directories: false, ignore: ['WEB-INF', 'META-INF'] });
 
     distFiles = distFiles.reduce(function (r, file) {
         r[file] = file;
@@ -149,8 +152,8 @@ function copyChangedDist() {
             toAdd.push(file);
             targetFiles[file] && toDel.push(targetFiles[file]);
         }
-        delete  distFiles[file];
-        delete  targetFiles[file];
+        delete distFiles[file];
+        delete targetFiles[file];
     }
     toAdd = toAdd
         .concat(Object.keys(distFiles))

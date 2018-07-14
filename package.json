@@ -28,7 +28,11 @@
   },
   "homepage": "https://github.com/lulee007/gulp-hm-web-gis-tool#readme",
   "devDependencies": {
-    "bower": "1.7.9",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-strip-css-comments": "^2.0.0"
+  },
+  "dependencies": {
     "browser-sync": "^2.24.5",
     "cssbeautify": "^0.3.1",
     "del": "2.2.2",

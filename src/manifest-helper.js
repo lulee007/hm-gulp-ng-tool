@@ -2,7 +2,7 @@
 
 var fs = require('fs-extra');
 var log = require('fancy-log');
-var configWrap = require('./config');
+var configWrap = require('./config-wrap');
 var path = require('path');
 module.exports = {
     removeItemBySource: removeItemBySource,

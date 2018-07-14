@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 var log = require('fancy-log');
-var configWrap = require('./config');
+var configWrap = require('./config-wrap');
 
 module.exports = {
     getEnv: env,
@@ -48,12 +48,11 @@ function parseProjectName() {
 }
 
 function env() {
-    var argv = process.argv;
-    if (!argv || !argv[2]) {
-        console.error('用法：gulp --port \r\n如：gulp --8080');
-        return;
+    var params = _parseParams(process.argv);
+    var port = params.port;
+    if(!port){
+        log('参数：port 为空（build 模式请忽略）如：--port=8080');
     }
-    var port = argv[2].replace('--', '');
     var pages = getModuleNames();
     modules = pages.map(function (p) {
         return {
@@ -62,10 +61,11 @@ function env() {
             tmpPath: configWrap.config.tmp + 'app/' + p
         };
     });
-    var prod = argv[4] && argv[4].replace('--', '');
+    var prod = params.prod;
     var version = parseVersion();
     var projectName = parseProjectName();
     return {
+        params:params,
         modules: modules,
         prod: prod,
         port: port,
@@ -115,13 +115,31 @@ function moduleFiles() {
 
 function getModuleNames() {
     if (!_module_names) {
-        var argv = process.argv;
-        if (!argv || !argv[3]) {
-            log.error('用法：gulp copy:copyProject --tongli_wechat \r\n\t\t如：gulp copy:copyProject --PROJECT_NAME[,Name2,Name3]');
-            throw new Error("缺少必要参数");
+        var params = _parseParams(process.argv);
+        if(!params || !params.pages){
+            log('pages *********************************');
+            log('pages 参数错误:--pages=page1,page2,page3');
+            log('pages *********************************');
+            return ;
         }
-        _module_names = argv[3].replace('--', '').split(',');
+        _module_names = params.pages.split(',');
         _module_names = _module_names.concat(coreConf.commonModules);
     }
     return _module_names;
+}
+
+
+function _parseParams(argv) {
+    var args = argv
+        .filter(function (arg) {
+            return arg.startsWith('--');
+        }).map(function (arg) {
+            var argKeyValue = arg.replace('--','').split('=');
+            return argKeyValue;
+        })
+        .reduce(function (params, argKeyValue) {
+            params[argKeyValue[0]] = argKeyValue[1] || '参数错误';
+            return params;
+        }, {});
+    return args;
 }

@@ -12,7 +12,7 @@ var gulp = require('gulp'),
 
 
 var util = require('./utils');
-var configWrap = require('./config');
+var configWrap = require('./config-wrap');
 var coreConf = require('./project-common');
 var merge = require('./merge');
 var minify = require('./minify');
