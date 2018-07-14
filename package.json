@@ -1,5 +1,5 @@
 {
-  "name": "gulp-hm-web-gis-tool",
+  "name": "hm-web-gis-gulp-tool",
   "version": "1.0.1",
   "description": "汉图研发部gis前端开发打包工具",
   "main": "index.js",
