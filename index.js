@@ -1,7 +1,7 @@
 'use strict';
 
 var gulp = require('gulp'),
-    runSequence = require('run-sequence'),
+    runSequence = require('run-sequence').use(gulp),
     browserSync = require('browser-sync'),
     gulp_watch = require('gulp-watch'),
     plumber = require('gulp-plumber'),

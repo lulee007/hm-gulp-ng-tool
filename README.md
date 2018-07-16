@@ -32,9 +32,7 @@ npm i hm-gismap-gulp
 2. 添加 gulpfile.js
     ```js
     'use strict';
-    var gulp = require('gulp'),
-        runSequence = require('run-sequence')
-    ;
+    var gulp = require('gulp');
 
 
     var tool = require('hm-gismap-gulp'),
