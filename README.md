@@ -42,7 +42,7 @@ npm i hm-gismap-gulp
 
     gulp.task('build', tool.build);
 
-    gulp.task('default', tool.buildAndWatch);
+    gulp.task('default',['build'], tool.watch);
     ```
 3. 在 gulp 目录中添加项目文件 project-xxx.js:
     ```js
@@ -71,6 +71,7 @@ npm i hm-gismap-gulp
 
 - 开发调试
     ```sh
+    # port 为 tomcat 端口号
     gulp --port=8080 --pages=page1,page2
     ```
     然后运行 tomcat 即可。

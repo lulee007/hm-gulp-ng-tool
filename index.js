@@ -299,7 +299,7 @@ gulp.task('temp', function (cb) {
     cb();
 });
 
-function _buildWatch(cb) {
+function _watch(cb) {
     if (!configWrap.config || Object.keys(configWrap.config).length < 1) {
         log('缺少配置文件');
         cb();
@@ -311,13 +311,13 @@ function _buildWatch(cb) {
         cb();
         return;
     }
-    runSequence('build', ['watch-module', 'watch-assets-vender', 'watch-normalJsHtml', 'watch-dist', 'watch-dev', 'start-browser-sync'], cb);
+    runSequence(['watch-module', 'watch-assets-vender', 'watch-normalJsHtml', 'watch-dist', 'watch-dev', 'start-browser-sync'], cb);
 }
 
 
 
 module.exports = {
-    buildAndWatch: _buildWatch,
+    watch: _watch,
     build: _build,
     configWrap: configWrap
 };
