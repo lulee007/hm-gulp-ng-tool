@@ -75,3 +75,47 @@ npm i hm-gismap-gulp
     gulp --port=8080 --pages=page1,page2
     ```
     然后运行 tomcat 即可。
+
+# 旧版本打包
+gulpfile.js 文件内容：
+```js
+gulp.task('clean-state', function () {
+    var targetJs = 'app.other.state.js';
+    return gulp.src(config.app + '/app/' + targetJs)
+        .pipe(clean());
+});
+
+/**
+ * 将所有state文件合并到 all.other.state.js 文件当中
+ **/
+gulp.task('build:routers', ['clean-state'], function () {
+    var targetJs = 'app.other.state.js';
+    return gulp.src([config.app + 'app/**/!(app)*.state.js'])
+        .pipe(concat(targetJs))
+        .pipe(gulp.dest(config.app + '/app/'));
+});
+
+gulp.task('watch:routers', function () {
+    gulp.watch(config.app + 'app/**/!(app)*.state.js', ['build:routers']);
+});
+
+gulp.task('browser-sync', function () {
+
+    browserSync({
+        open: true,
+        port: config.port,
+        // proxy: "http://192.168.8.34:18080",
+        server: {
+            baseDir: config.app
+        }
+        // serveStatic: [config.app]
+    });
+    gulp.watch([config.app + '*.html', config.app + 'app/**']).on('change', browserSync.reload);
+
+});
+
+gulp.task('default', function (cb) {
+    runSequence(['build:routers', 'watch:routers', 'browser-sync'],cb);
+});
+
+```
