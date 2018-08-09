@@ -23,6 +23,7 @@ var handleErrors = require('./src/handle-errors'),
 gulp.task('inject-index', inject.index);
 gulp.task('inject-home', inject.homeModule);
 gulp.task('inject-states', inject.states);
+gulp.task('inject-constants',inject.constants);
 
 gulp.task('build-styles', buildStyle.buildStylesByFolders);
 
@@ -219,7 +220,8 @@ function _build(cb) {
         'merge-service',
 
         'copy-modules',
-
+        
+        'inject-constants',
         'inject-index',
         'inject-home',
         'inject-states',
@@ -242,6 +244,7 @@ gulp.task('build-dev', function (cb) {
     runSequence(
         'save-old-manifest',
         'clean-temp-rev',
+        'inject-constants',
         'inject-index',
         'inject-home',
         'inject-states',
@@ -318,5 +321,6 @@ function _watch(cb) {
 module.exports = {
     watch: _watch,
     build: _build,
-    configWrap: configWrap
+    configWrap: configWrap,
+    inject:inject
 };

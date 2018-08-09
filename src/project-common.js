@@ -29,7 +29,6 @@ module.exports = {
         'app/app.all.state.js',
     ],
     commonFile: [
-        'app/app.constants.js',
         'app/app.module.js',
 
     ],
@@ -54,7 +53,7 @@ module.exports = {
         '**/*.service.js',
     ],
     commonIgnore: [
-        'app.all.state.js',// TODO remove tmp
+        'app/app.constants.js',
         '**/*.merged.state.js',
         'home/home.controller.js'
         // 'index.html'

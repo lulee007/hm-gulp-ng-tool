@@ -4,6 +4,7 @@ var gulp = require('gulp'),
     plumber = require('gulp-plumber'),
     Q = require('q'),
     fs = require('fs'),
+    jsprettify = require('gulp-jsbeautifier'),
     injectString = require('gulp-inject-string');
 
 var rename = require("gulp-rename");
@@ -21,7 +22,8 @@ var configWrap = require('./config-wrap');
 module.exports = {
     states: states,
     index: index,
-    homeModule: homeModule
+    homeModule: homeModule,
+    constants: constants
 
 };
 
@@ -233,5 +235,34 @@ function states() {
 
     });
     return deferred.promise;
+
+}
+
+
+function constants() {
+    var appConstants = configWrap.config.APPCONSTANTS;
+    var env = util.getEnv();
+    var pages = env.pages;
+    var pagesString = pages.join('\',\'');
+    return gulp.src(configWrap.config.webappDir + 'app/app.constants.js', { base: configWrap.config.webappDir })
+        .pipe(mapStream(function (file, cb) {
+            var constantContent = file.contents.toString();
+
+            constantContent = constantContent
+                .replace('--inject pages here--', pagesString)
+                .replace('//--inject APPCONSTANTS here--', JSON.stringify(appConstants).replace('{', '').replace('}', ''))
+                .replace('\'--inject APIHOST here--\'', appConstants.API_HOST.split('/').filter(function (p) { return p; }).join('\\/'));
+
+            log('pagesString', pagesString);
+            file.contents = new Buffer(constantContent, 'utf-8');
+            var oldFile = file.path.split(path.sep).join('/').replace(configWrap.config.webappDir, configWrap.config.tmp);
+            if (fs.existsSync(oldFile)) {
+                log('删除旧文件', oldFile);
+                fs.unlinkSync(oldFile);
+            }
+            cb(null, file);
+        }))
+        .pipe(jsprettify())
+        .pipe(gulp.dest(configWrap.config.tmp));
 
 }

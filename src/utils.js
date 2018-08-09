@@ -14,7 +14,7 @@ module.exports = {
 
 var modules;
 var coreConf = require('./project-common');
-var _module_names;
+var _module_names,_pages;
 var parseString = require('xml2js').parseString;
 // return the version number from `pom.xml` file
 function parseVersion() {
@@ -53,7 +53,8 @@ function env() {
     if (!port) {
         log('参数：port 为空（build 模式请忽略）如：--port=8080');
     }
-    var pages = getModuleNames();
+    var allPages = getModuleNames()
+    var pages = allPages[0];
     modules = pages.map(function (p) {
         return {
             name: p,
@@ -67,6 +68,7 @@ function env() {
     return {
         params: params,
         modules: modules,
+        pages:allPages[1],
         prod: prod,
         port: port,
         projectVersion: version,
@@ -76,7 +78,7 @@ function env() {
 
 
 function normalFilesInModules() {
-    var pages = getModuleNames();
+    var pages = getModuleNames()[0];
     var files = coreConf.commonFile;
     var commonIgnore = coreConf.commonIgnore.map(function (file) {
         return '!' + configWrap.config.webappDir + file;
@@ -123,9 +125,10 @@ function getModuleNames() {
             return;
         }
         _module_names = params.pages.split(',');
+        _pages = _module_names;
         _module_names = _module_names.concat(coreConf.commonModules);
     }
-    return _module_names;
+    return [_module_names,_pages];
 }
 
 
