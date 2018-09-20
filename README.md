@@ -5,7 +5,7 @@
 ## 安装：
 
 ```sh
-npm i hm-gismap-gulp
+npm i hm-gulp-ng-tool
 ```
 
 ## 配置：
