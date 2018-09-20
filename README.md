@@ -1,7 +1,9 @@
 # gulp-hm-web-gis-tool
-汉图研发部gis前端开发打包工具
+
+汉图研发部 angularjs 前端开发打包工具
 
 ## 安装：
+
 ```sh
 npm i hm-gismap-gulp
 ```
@@ -26,7 +28,6 @@ npm i hm-gismap-gulp
         gulpDir: cwd + '/gulp/',
         projectName : 'sims-xxxxx'
     };
-
     ```
 
 2. 在项目根目录添加 gulp 文件夹，然后添加配置文件 project-common.js：
@@ -43,11 +44,10 @@ npm i hm-gismap-gulp
     };
     ```
 
-2. 添加 gulpfile.js
+3. 添加 gulpfile.js
     ```js
     'use strict';
     var gulp = require('gulp');
-
 
     var tool = require('hm-gismap-gulp'),
         commonConfig = require('./gulp/project-common'),
@@ -61,7 +61,7 @@ npm i hm-gismap-gulp
 
     gulp.task('default',['build'], tool.watch);
     ```
-3. 在 gulp 目录中添加项目文件 project-xxx.js:
+4. 在 gulp 目录中添加项目文件 project-xxx.js:
     ```js
     'use strict';
 
@@ -76,8 +76,8 @@ npm i hm-gismap-gulp
             // 可能需要的第三方库额外文件
         ]
     };
-
     ```
+
 ## 使用方式：
 
 - 打包：
@@ -93,8 +93,10 @@ npm i hm-gismap-gulp
     ```
     然后运行 tomcat 即可。
 
-# 旧版本打包
-gulpfile.js 文件内容：
+## 旧版本打包
+
+## gulpfile.js 文件内容：
+
 ```js
 gulp.task('clean-state', function () {
     var targetJs = 'app.other.state.js';

@@ -1,6 +1,6 @@
 {
-  "name": "hm-gismap-gulp",
-  "version": "1.1.1",
+  "name": "hm-ng-gulp-tool",
+  "version": "2.0.0",
   "description": "汉图研发部gis前端开发打包工具",
   "main": "index.js",
   "scripts": {
@@ -27,8 +27,7 @@
     "url": "https://github.com/lulee007/gulp-hm-web-gis-tool/issues"
   },
   "homepage": "https://github.com/lulee007/gulp-hm-web-gis-tool#readme",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
     "gulp-jsbeautifier": "^2.1.2",
     "browser-sync": "^2.24.5",
@@ -76,7 +75,7 @@
     "gulp-wait": "0.0.2",
     "gulp-watch": "^5.0.0",
     "lazypipe": "1.0.1",
-    "lodash": "4.15.0",
+    "lodash": "4.17.5",
     "main-bower-files": "2.13.1",
     "map-stream": "0.0.6",
     "proxy-middleware": "0.15.0",
