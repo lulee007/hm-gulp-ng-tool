@@ -318,6 +318,7 @@ function _watch(cb) {
 }
 
 function wrapProjectCommon(common) {
+    console.log("开始合并公共配置");
     var oldCommon = require('./src/project-common');
     console.log('wrapProjectCommon >>> old', oldCommon);
     var newCommon = JSON.parse(JSON.stringify(oldCommon));
@@ -328,6 +329,7 @@ function wrapProjectCommon(common) {
     console.log('wrapProjectCommon >>> assigning', oldCommon);
     oldCommon = require('./src/project-common');
     console.log('wrapProjectCommon >>> the new one', oldCommon);
+    console.log("合并公共配置成功");
 }
 
 module.exports = {
