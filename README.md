@@ -10,6 +10,32 @@ npm i hm-gismap-gulp
 
 ## 配置：
 
+1. 首先要确保项目工程目录下的`src/main/webapp/app/app.constants.js` 文件内容如下  
+
+    **注意：** 带有 `--inject` 字样的文字请不要删除，否则会导致编译失败
+
+    ```js
+    (function () {
+        'use strict';
+        angular
+            .module('XXXXApp')
+            .constant('APP_CONSTANT', {
+                //debug信息启用
+                'DEBUG_INFO_ENABLED': true,
+                //认证白名单
+                'AUTH_WHITE_LIST': [/gateway\/api\/authenticate/,/'--inject APIHOST here--'\/mapApiKeys\/check/],
+                //验证请求地址
+                'API_TOKEN_URL':'gateway/api/authenticate',
+                'STATE_WHITE_LIST': ['404', '403', '500', 'tp', ''],
+                'TP_STATE_WHITE_LIST':['--inject pages here--'],
+
+                //项目配置
+                //--inject APPCONSTANTS here--
+            });
+    })();
+
+    ```
+
 1. 在项目根目录添加 gulp 文件夹，然后添加配置文件 config.js：
     ```js
     'use strict';
@@ -26,11 +52,23 @@ npm i hm-gismap-gulp
         webTargetDir: 'target/',
         port: 9000,
         gulpDir: cwd + '/gulp/',
-        projectName : 'sims-xxxxx'
+        projectName : 'sims-xxxxx',
+        APPCONSTANTS: { // 这里放公共配置常量，具体子系统的常量单独写到子系统中
+            API_KEY: _API_KEY,
+            API_HOST: 'gateway/simsgismap/api/',
+            AUTH_URL: 'gateway/api/authenticate',
+            ALL_MODULES: {
+                xxxxx: {
+                    name: "xxxx",
+                    href: "#/tp?apikey=" + _API_KEY + "&state=xxxx",
+                    src: "assets/global/img/xxxx.png"
+                }
+            }
+        }
     };
     ```
 
-2. 在项目根目录添加 gulp 文件夹，然后添加配置文件 project-common.js：
+1. 在项目根目录添加 gulp 文件夹，然后添加配置文件 project-common.js：
     ```js
     'use strict';
     module.exports = {
@@ -43,25 +81,7 @@ npm i hm-gismap-gulp
         ]
     };
     ```
-
-3. 添加 gulpfile.js
-    ```js
-    'use strict';
-    var gulp = require('gulp');
-
-    var tool = require('hm-gismap-gulp'),
-        commonConfig = require('./gulp/project-common'),
-        config = require('./gulp/config');
-
-    // 一定要添加配置文件
-    tool.configWrap.config = config;
-    tool.wrapProjectCommon(commonConfig);
-
-    gulp.task('build', tool.build);
-
-    gulp.task('default',['build'], tool.watch);
-    ```
-4. 在 gulp 目录中添加项目文件 project-xxx.js:
+1. 在 `gulp` 目录中添加子系统配置文件 `project-xxx.js`:
     ```js
     'use strict';
 
@@ -76,6 +96,24 @@ npm i hm-gismap-gulp
             // 可能需要的第三方库额外文件
         ]
     };
+    ```
+
+1. 添加 gulpfile.js
+    ```js
+    'use strict';
+    var gulp = require('gulp');
+
+    var tool = require('hm-gismap-gulp'),
+        commonConfig = require('./gulp/project-common'),
+        config = require('./gulp/config');
+
+    // **注意** 一定要添加配置文件
+    tool.configWrap.config = config;
+    tool.wrapProjectCommon(commonConfig);
+
+    gulp.task('build', tool.build);
+
+    gulp.task('default',['build'], tool.watch);
     ```
 
 ## 使用方式：
