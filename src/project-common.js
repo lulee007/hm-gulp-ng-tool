@@ -20,7 +20,6 @@ module.exports = {
         'bower_components/angular-sanitize/angular-sanitize.min.js',
         'bower_components/angular-ui-router/release/angular-ui-router.min.js',
         'bower_components/oclazyload/dist/ocLazyLoad.min.js',
-        // 'bower_components/ng-stomp/dist/ng-stomp.standalone.min.js',
         'bower_components/angular-toastr/dist/angular-toastr.tpls.js',
         'bower_components/hm-ng-map-base/dist/gismap.frontend.module.min.js',
         'app/app.module.js',

@@ -29,6 +29,20 @@ npm i hm-gismap-gulp
 
     ```
 
+2. 在项目根目录添加 gulp 文件夹，然后添加配置文件 project-common.js：
+    ```js
+    'use strict';
+    module.exports = {
+        coreCss: [
+        ],
+        coreJs: [
+             // 'bower_components/ng-stomp/dist/ng-stomp.standalone.min.js',
+        ],
+        commonFile: [
+        ]
+    };
+    ```
+
 2. 添加 gulpfile.js
     ```js
     'use strict';
@@ -36,9 +50,12 @@ npm i hm-gismap-gulp
 
 
     var tool = require('hm-gismap-gulp'),
+        commonConfig = require('./gulp/project-common'),
         config = require('./gulp/config');
+
     // 一定要添加配置文件
     tool.configWrap.config = config;
+    tool.wrapProjectCommon(commonConfig);
 
     gulp.task('build', tool.build);
 
