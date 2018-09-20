@@ -1,6 +1,25 @@
-# gulp-hm-web-gis-tool
+# hm-gulp-ng-tool
 
 汉图研发部 angularjs 前端开发打包工具
+
+## 开发
+
+- 打包
+
+```sh
+gulp build-dist
+```
+
+- 发布
+
+```sh
+npm publish hm-gulp-ng-tool@1.1.1 --registry=https://registry.npmjs.org
+```
+
+- 撤销
+```sh
+npm unpublish hm-gulp-ng-tool@1.1.1 --registry=https://registry.npmjs.org
+```
 
 ## 安装：
 
