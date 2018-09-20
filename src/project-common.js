@@ -22,8 +22,7 @@ module.exports = {
         'bower_components/oclazyload/dist/ocLazyLoad.min.js',
         // 'bower_components/ng-stomp/dist/ng-stomp.standalone.min.js',
         'bower_components/angular-toastr/dist/angular-toastr.tpls.js',
-        'bower_components/hm-angularjs-base/dist/hm.webapp.all.js',
-        'bower_components/hm-angularjs-base/dist/metronic.all.js',
+        'bower_components/hm-angularjs-base/dist/gismap.frontend.module.min.js',
         'app/app.module.js',
         'app/app.constants.js',// TODO 分割app.constants.js 分为 common 和项目
         'app/app.all.state.js',
@@ -33,9 +32,9 @@ module.exports = {
 
     ],
     commonModules: [
-        'home',
-        'thrid_part',
-        'login'
+        // 'home',
+        // 'thrid_part',
+        // 'login'
     ],
     commonAssets: [
         // 'assets/**/*',
@@ -43,7 +42,7 @@ module.exports = {
         'assets/global/img/**/*',
         'favicon.ico',
         'WEB-INF/**/*',
-        'app/tpl/**/*'
+        // 'app/tpl/**/*'
     ],
     moduleIgnore: [
         '**/*.css',// TODO remove tmp
@@ -54,7 +53,7 @@ module.exports = {
     ],
     commonIgnore: [
         'app/app.constants.js',
-        '**/*.merged.state.js',
+        // '**/*.merged.state.js',
         'home/home.controller.js'
         // 'index.html'
 

@@ -23,7 +23,7 @@ var handleErrors = require('./src/handle-errors'),
 gulp.task('inject-index', inject.index);
 gulp.task('inject-home', inject.homeModule);
 gulp.task('inject-states', inject.states);
-gulp.task('inject-constants',inject.constants);
+gulp.task('inject-constants', inject.constants);
 
 gulp.task('build-styles', buildStyle.buildStylesByFolders);
 
@@ -220,7 +220,7 @@ function _build(cb) {
         'merge-service',
 
         'copy-modules',
-        
+
         'inject-constants',
         'inject-index',
         'inject-home',
@@ -317,10 +317,23 @@ function _watch(cb) {
     runSequence(['watch-module', 'watch-assets-vender', 'watch-normalJsHtml', 'watch-dist', 'watch-dev', 'start-browser-sync'], cb);
 }
 
+function wrapProjectCommon(common) {
+    var oldCommon = require('./src/project-common');
+    console.log('wrapProjectCommon >>> old', oldCommon);
+    var newCommon = JSON.parse(JSON.stringify(oldCommon));
+    Object.keys(newCommon).forEach(function (configName) {
+        newCommon[configName] = (newCommon[configName] || []).concat(common[configName]|| []);
+    })
+    Object.assign(oldCommon, newCommon);
+    console.log('wrapProjectCommon >>> assigning', oldCommon);
+    oldCommon = require('./src/project-common');
+    console.log('wrapProjectCommon >>> the new one', oldCommon);
+}
 
 module.exports = {
     watch: _watch,
     build: _build,
     configWrap: configWrap,
-    inject:inject
+    inject: inject,
+    wrapProjectCommon: wrapProjectCommon,
 };

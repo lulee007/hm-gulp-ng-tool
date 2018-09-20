@@ -247,10 +247,12 @@ function constants() {
     return gulp.src(configWrap.config.webappDir + 'app/app.constants.js', { base: configWrap.config.webappDir })
         .pipe(mapStream(function (file, cb) {
             var constantContent = file.contents.toString();
-
+            
+            var unWrapConstantContent = JSON.stringify(appConstants).replace('{', '');
+            unWrapConstantContent = unWrapConstantContent.substring(0,unWrapConstantContent.lastIndexOf('}'));
             constantContent = constantContent
                 .replace('--inject pages here--', pagesString)
-                .replace('//--inject APPCONSTANTS here--', JSON.stringify(appConstants).replace('{', '').replace('}', ''))
+                .replace('//--inject APPCONSTANTS here--', unWrapConstantContent)
                 .replace('\'--inject APIHOST here--\'', appConstants.API_HOST.split('/').filter(function (p) { return p; }).join('\\/'));
 
             log('pagesString', pagesString);
